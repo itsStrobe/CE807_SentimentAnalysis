@@ -26,7 +26,7 @@ def GenerateFeatMatrix(sentences, wnd_size = WND_SIZE, model=None):
 
     for sentence in sentences:
         sentence = sentence.split()
-        featMatrix = np.append(featMatrix, GenerateFeatVector(sentence, wnd_size=wnd_size, model=model))
+        featMatrix = np.append(featMatrix, GenerateFeatVector(sentence, wnd_size=wnd_size, model=model), axis=0)
 
     return featMatrix
 

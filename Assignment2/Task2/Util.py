@@ -27,8 +27,9 @@ def ExtractCorpus(dataset, sentId_col=1, phraseId_col=2):
     sentIt = -1
 
     for sent in dataset:
-        if(sent[sentId_col] != sentIt):
-            corpus.append(sent[phraseId_col].split())
-            sentIt = sent[sentId_col]
+        # UNCOMMENT THIS IF ONLY USING RELEVANT SENTENCES FROM PROVIDED CORPUS
+        # if(sent[sentId_col] != sentIt):
+        corpus.append(sent[phraseId_col].split())
+        sentIt = sent[sentId_col]
 
     return corpus

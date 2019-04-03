@@ -19,14 +19,16 @@ def GenerateFeatVector(sentence, wnd_size = WND_SIZE, model=None):
     for word in sentence:
         featVector = np.append(featVector, [model.wv[word]], axis=0)
 
-    return np.average(featVector, axis=1)
+    return np.average(featVector, axis=0).reshape(1, WND_SIZE)
 
 def GenerateFeatMatrix(sentences, wnd_size = WND_SIZE, model=None):
-    featMatrix = np.empty((0, WND_SIZE))
+    it = 0
+    featMatrix = np.empty((sentences.shape[0], WND_SIZE))
 
     for sentence in sentences:
         sentence = sentence.split()
-        featMatrix = np.append(featMatrix, GenerateFeatVector(sentence, wnd_size=wnd_size, model=model), axis=0)
+        featMatrix[it, :] = GenerateFeatVector(sentence, wnd_size=wnd_size, model=model)
+        it += 1
 
     return featMatrix
 
@@ -54,11 +56,13 @@ def main():
     test_sent  = test[:, 2]
 
     train_feat = GenerateFeatMatrix(train_sent, wnd_size = WND_SIZE, model=model)
+    print("Finished Training Matrix")
     test_feat = GenerateFeatMatrix(test_sent, wnd_size = WND_SIZE, model=model)
+    print("Finished Test Matrix")
 
-    np.savetxt(TRAIN_DIR, train_feat)
-    np.savetxt(TARG_DIR, targets)
-    np.savetxt(TEST_DIR, test_feat)
+    np.savetxt(TRAIN_DIR, train_feat, delimiter=',')
+    np.savetxt(TARG_DIR, targets, delimiter=',')
+    np.savetxt(TEST_DIR, test_feat, delimiter=',')
 
 
 

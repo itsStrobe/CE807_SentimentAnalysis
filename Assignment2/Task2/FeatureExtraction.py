@@ -1,9 +1,14 @@
 import numpy as np
 from gensim.models import Word2Vec
+from gensim.models import KeyedVectors
+from gensim.scripts.glove2word2vec import glove2word2vec
 from Util import ReadTrainData, ReadTestData, ExtractCorpus
 
 # CONSTANTS
 MODEL_DIR = "./models/word2vec_corpus.model"
+# Uncomment if using KeyedVectors pre-trained models - https://nlp.stanford.edu/projects/glove/
+# MODEL_DIR = "./models/glove.6B.100d.model"
+# GLOVE_DIR = "./models/glove.6B.100d.txt"
 TRAIN_DIR = "./data/train_features.csv"
 TEST_DIR  = "./data/test_features.csv"
 TARG_DIR  = "./data/targets.csv"
@@ -48,8 +53,12 @@ def main():
     # Load Model
     model = Word2Vec.load(MODEL_DIR)
 
+    # Uncomment if using KeyedVectors pre-trained models - https://nlp.stanford.edu/projects/glove/
+    # _ = glove2word2vec(GLOVE_DIR, MODEL_DIR)
+    # model = KeyedVectors.load_word2vec_format(MODEL_DIR, binary=False)
+
     # Check the model was loaded succesfully
-    print(model.wv["Happy"])
+    print(model.wv["happy"])
 
     train_sent = train[:, 2]
     targets    = targets

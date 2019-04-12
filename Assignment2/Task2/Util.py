@@ -8,6 +8,10 @@ def ReadTrainData(fileName='./data/train.tsv', asNumpy=True):
     df_features = df.drop(['Sentiment'], axis=1)
     df_targets = df.drop(['PhraseId', 'SentenceId', 'Phrase'], axis=1)
 
+    df_features = df_features.apply(lambda x: x.astype(str).str.lower())
+    df_features['PhraseId'] = pd.to_numeric(df_features['PhraseId'])
+    df_features['SentenceId'] = pd.to_numeric(df_features['SentenceId'])
+
     if(asNumpy):
         return df_features.values, np.transpose(df_targets.values)[0]
     else:
@@ -16,6 +20,10 @@ def ReadTrainData(fileName='./data/train.tsv', asNumpy=True):
 def ReadTestData(fileName='./data/test.tsv', asNumpy=True):
     df_features = pd.read_csv(fileName, sep='\t', header=0)
     df_features.dropna(axis='index', how='any')
+
+    df_features = df_features.apply(lambda x: x.astype(str).str.lower())
+    df_features['PhraseId'] = pd.to_numeric(df_features['PhraseId'])
+    df_features['SentenceId'] = pd.to_numeric(df_features['SentenceId'])
 
     if(asNumpy):
         return df_features.values

@@ -12,7 +12,7 @@ MODEL_DIR = "./models/word2vec_corpus.model"
 TRAIN_DIR = "./data/train_features.csv"
 TEST_DIR  = "./data/test_features.csv"
 TARG_DIR  = "./data/targets.csv"
-RETRAIN   = False
+RETRAIN   = True
 WND_SIZE  = 100
 
 def GenerateFeatVector(sentence, wnd_size = WND_SIZE, model=None):

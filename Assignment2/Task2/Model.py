@@ -1,5 +1,7 @@
+import time
 import keras
 import numpy as np
+from pandas import DataFrame
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout
 from keras.wrappers.scikit_learn import KerasClassifier
@@ -17,7 +19,7 @@ NODES     = 200
 DROPOUT   = 0.5
 WND_SIZE  = 100
 ACT_LAYER = 'relu'
-OPTIMIZER = 'rmsprop'
+OPTIMIZER = 'adam'
 
 def create_model(num_nodes=NODES, input_dim=WND_SIZE, activation=ACT_LAYER, dropout_rate=DROPOUT, optimizer=OPTIMIZER):
 
@@ -43,27 +45,32 @@ y = keras.utils.to_categorical(np.genfromtxt(TARG_DIR, delimiter=','), num_class
 # Data separation for model evaluation
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=42)
 
-# Grid Search Using 10-Fold Cross Validation
-num_nodes    = [50, 100, 150, 200, 250, 300]
-activation   = ['relu', 'sigmoid', 'tanh', 'linear']
-dropout_rate = [0.0, 0.3, 0.5, 0.7, 0.9]
-optimizer    = ['rmsprop', 'adam']
-epochs       = [1, 10, 100]
-batch_size   = [1, 10, 100]
+# Parameters to be tested
+num_nodes    = [100, 200, 300, 400]
+activation   = ['relu', 'sigmoid', 'tanh']
+dropout_rate = [0.0, 0.3, 0.5]
+optimizer    = ['adam']
+epochs       = [100]
+batch_size   = [100]
 
+str_time = time.time()
+
+# Performing 10-Fold Cross Validation with the Specified Parameters
 model       = KerasClassifier(build_fn=create_model)
 param_grid  = dict(num_nodes=num_nodes, dropout_rate=dropout_rate, activation=activation, optimizer=optimizer, epochs=epochs, batch_size=batch_size)
-grid        = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=-1, cv=10)
+grid        = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=-1, cv=10, return_train_score=True)
 best_model  = grid.fit(X, y)
 
-print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
+end_time = time.time()
 
-# Train and Evaluate Model
-# best_model.fit(X_train, y_train, epochs=100, batch_size=100)
-score = best_model.evaluate(X_test, y_test, batch_size=16)
-print(score)
+print("Elapsed Time:", end_time - str_time)
 
-# Generate predictions for contest dataset
+
+print("Best: %f using %s" % (best_model.best_score_, best_model.best_params_))
+dtc_dataframe = DataFrame.from_dict(best_model.cv_results_)
+dtc_dataframe.to_csv("GridSearchCV_Results.csv")
+
+# Generate predictions for contest dataset using model trained with best parameters found
 X_test = np.genfromtxt(TEST_DIR, delimiter=',')
 pred_encoded = best_model.predict(X_test)
 pred = np.zeros(pred_encoded.shape[0])

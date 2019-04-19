@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+# Extracts the training dataset either as a numpy matrix or as a pandas dataframe
 def ReadTrainData(fileName='./data/train.tsv', asNumpy=True):
     df = pd.read_csv(fileName, sep='\t', header=0)
     df.dropna(axis='index', how='any')
@@ -17,6 +18,7 @@ def ReadTrainData(fileName='./data/train.tsv', asNumpy=True):
     else:
         return df_features, df_targets
 
+# Extracts the testing dataset either as a numpy matrix or as a pandas dataframe
 def ReadTestData(fileName='./data/test.tsv', asNumpy=True):
     df_features = pd.read_csv(fileName, sep='\t', header=0)
     df_features.dropna(axis='index', how='any')
@@ -30,14 +32,19 @@ def ReadTestData(fileName='./data/test.tsv', asNumpy=True):
     else:
         return df_features
 
+# Creates a list containing lists of tokens that represent the sentences contained
+# in the provided dataset.
 def ExtractCorpus(dataset, sentId_col=1, phraseId_col=2):
     corpus = []
     sentIt = -1
 
     for sent in dataset:
-        # UNCOMMENT THIS IF ONLY USING RELEVANT SENTENCES FROM PROVIDED CORPUS
+        # UNCOMMENT IF ONLY USING COMPLETE SENTENCES FROM PROVIDED CORPUS
         # if(sent[sentId_col] != sentIt):
+        #     corpus.append(sent[phraseId_col].split())
+        #     sentIt = sent[sentId_col]
+
+       # This adds lists even if they are not complete sentences.
         corpus.append(sent[phraseId_col].split())
-        sentIt = sent[sentId_col]
 
     return corpus

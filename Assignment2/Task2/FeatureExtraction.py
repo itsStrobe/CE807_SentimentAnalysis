@@ -15,6 +15,8 @@ TARG_DIR  = "./data/targets.csv"
 RETRAIN   = True
 WND_SIZE  = 100
 
+# Given a list of tokens (sentence), returns the average word vector encoding
+# of the tokens contained.
 def GenerateFeatVector(sentence, wnd_size = WND_SIZE, model=None):
     if(model is None):
         model = Word2Vec.load(MODEL_DIR)
@@ -26,6 +28,8 @@ def GenerateFeatVector(sentence, wnd_size = WND_SIZE, model=None):
 
     return np.average(featVector, axis=0).reshape(1, WND_SIZE)
 
+# Given a list of lists of tokens (sentences), returns the feature vectors
+# to be used as examples.
 def GenerateFeatMatrix(sentences, wnd_size = WND_SIZE, model=None):
     it = 0
     featMatrix = np.empty((sentences.shape[0], WND_SIZE))

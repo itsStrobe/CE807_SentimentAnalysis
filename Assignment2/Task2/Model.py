@@ -17,14 +17,14 @@ PRED_DIR    = "./data/predictions.csv"
 LABELS      = 5
 NODES       = 400
 DROPOUT     = 0.5
-WND_SIZE    = 100
+VEC_SIZE    = 100
 ACT_LAYER   = 'sigmoid'
 OPTIMIZER   = 'adam'
 GRID_SEARCH = False
 
 # Method to create the model. Needed in order to make use of the GridSearchCV method by Scikit-Learn
 # The default values are the ones with best performance in previous tests.
-def create_model(num_nodes=NODES, input_dim=WND_SIZE, activation=ACT_LAYER, dropout_rate=DROPOUT, optimizer=OPTIMIZER):
+def create_model(num_nodes=NODES, input_dim=VEC_SIZE, activation=ACT_LAYER, dropout_rate=DROPOUT, optimizer=OPTIMIZER):
 
     # Model Arquitecture
     model = Sequential()

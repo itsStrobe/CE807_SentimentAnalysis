@@ -13,30 +13,30 @@ TRAIN_DIR = "./data/train_features.csv"
 TEST_DIR  = "./data/test_features.csv"
 TARG_DIR  = "./data/targets.csv"
 RETRAIN   = True
-WND_SIZE  = 100
+VEC_SIZE  = 100
 
 # Given a list of tokens (sentence), returns the average word vector encoding
 # of the tokens contained.
-def GenerateFeatVector(sentence, wnd_size = WND_SIZE, model=None):
+def GenerateFeatVector(sentence, vec_size = VEC_SIZE, model=None):
     if(model is None):
         model = Word2Vec.load(MODEL_DIR)
     
-    featVector = np.empty((0, WND_SIZE))
+    featVector = np.empty((0, vec_size))
 
     for word in sentence:
         featVector = np.append(featVector, [model.wv[word]], axis=0)
 
-    return np.average(featVector, axis=0).reshape(1, WND_SIZE)
+    return np.average(featVector, axis=0).reshape(1, vec_size)
 
 # Given a list of lists of tokens (sentences), returns the feature vectors
 # to be used as examples.
-def GenerateFeatMatrix(sentences, wnd_size = WND_SIZE, model=None):
+def GenerateFeatMatrix(sentences, vec_size = VEC_SIZE, model=None):
     it = 0
-    featMatrix = np.empty((sentences.shape[0], WND_SIZE))
+    featMatrix = np.empty((sentences.shape[0], vec_size))
 
     for sentence in sentences:
         sentence = sentence.split()
-        featMatrix[it, :] = GenerateFeatVector(sentence, wnd_size=wnd_size, model=model)
+        featMatrix[it, :] = GenerateFeatVector(sentence, vec_size=vec_size, model=model)
         it += 1
 
     return featMatrix
@@ -50,7 +50,7 @@ def main():
     if(RETRAIN):
         full_dataset = np.append(train, test, axis=0)
         corpus = ExtractCorpus(full_dataset)
-        model = Word2Vec(corpus, size=WND_SIZE, window=5, min_count=1, workers=4)
+        model = Word2Vec(corpus, size=VEC_SIZE, window=5, min_count=1, workers=4)
         model.train(corpus, total_examples=len(corpus), epochs=10)
         model.save(MODEL_DIR)
 
@@ -68,9 +68,9 @@ def main():
     targets    = targets
     test_sent  = test[:, 2]
 
-    train_feat = GenerateFeatMatrix(train_sent, wnd_size = WND_SIZE, model=model)
+    train_feat = GenerateFeatMatrix(train_sent, vec_size = VEC_SIZE, model=model)
     print("Finished Training Matrix")
-    test_feat = GenerateFeatMatrix(test_sent, wnd_size = WND_SIZE, model=model)
+    test_feat = GenerateFeatMatrix(test_sent, vec_size = VEC_SIZE, model=model)
     print("Finished Test Matrix")
 
     np.savetxt(TRAIN_DIR, train_feat, delimiter=',')
